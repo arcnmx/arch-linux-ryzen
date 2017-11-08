@@ -2,8 +2,7 @@
 # Maintainer: Tobias Powalowski <tpowa@archlinux.org>
 # Maintainer: Thomas Baechler <thomas@archlinux.org>
 
-pkgbase=linux               # Build stock -ARCH kernel
-#pkgbase=linux-custom       # Build kernel with a different name
+pkgbase=linux-ryzen
 _srcname=linux-4.13
 pkgver=4.13.11
 pkgrel=1
@@ -21,16 +20,18 @@ source=("https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
         # pacman hook for initramfs regeneration
         '90-linux.hook'
         # standard config files for mkinitcpio ramdisk
-        'linux.preset')
+        'linux.preset'
+        # patch files
+        'amd-svm-pat.patch'
+        'k10temp-0001.patch'
+        'k10temp-0002.patch'
+        'k10temp-0003.patch'
+        'amd-svm-avic-0001.patch'
+        'amd-svm-avic-0002.patch'
+        'amd-svm-avic-0003.patch'
+        'x86-cpu-fixup.patch'
+        'nct6776-fan6.patch')
 
-sha256sums=('2db3d6066c3ad93eb25b973a3d2951e022a7e975ee2fa7cbe5bddf84d9a49a2c'
-            'SKIP'
-            'f5fb017ee531dc35e3462ccb2d244d4fdc8ac6df9cd3337aa6df2ffc280b1bd6'
-            'SKIP'
-            '9b1d9fcb55782e6149aca4dc2d3b250dd4cedf1bf4bd8c6f0968acab0e2e0ee4'
-            '9c6c4d27d59638d0569ea09a97138bfcfb219f17cdf1138be141380e6654f302'
-            '834bd254b56ab71d73f59b3221f056c72f559553c04718e350ab2a3e2991afe0'
-            'ad6344badc91ad0630caacde83f7f9b97276f80d26a20619a87952be65492c65')
 validpgpkeys=(
               'ABAF11C65A2970B130ABE3C479BE3E4300411886' # Linus Torvalds
               '647F28654894E3BD457199BE38DBBDC86092693E' # Greg Kroah-Hartman
@@ -43,6 +44,12 @@ prepare() {
 
   # add upstream patch
   patch -p1 -i ../patch-${pkgver}
+
+  # patches
+  for p in ${srcdir}/*.patch; do
+    echo patching $p
+    patch -p1 -i $p
+  done
 
   # security patches
 
@@ -84,7 +91,7 @@ build() {
 }
 
 _package() {
-  pkgdesc="The ${pkgbase/linux/Linux} kernel and modules"
+  pkgdesc="The ${pkgbase/linux/Linux} kernel and modules with Ryzen temperature monitoring and KVM fixes"
   [ "${pkgbase}" = "linux" ] && groups=('base')
   depends=('coreutils' 'linux-firmware' 'kmod' 'mkinitcpio>=0.7')
   optdepends=('crda: to set the correct wireless channels of your country')
@@ -237,3 +244,22 @@ for _p in ${pkgname[@]}; do
 done
 
 # vim:set ts=8 sts=2 sw=2 et:
+
+# makepkg -g >> PKGBUILD
+sha256sums=('2db3d6066c3ad93eb25b973a3d2951e022a7e975ee2fa7cbe5bddf84d9a49a2c'
+            'SKIP'
+            'f5fb017ee531dc35e3462ccb2d244d4fdc8ac6df9cd3337aa6df2ffc280b1bd6'
+            'SKIP'
+            '9b1d9fcb55782e6149aca4dc2d3b250dd4cedf1bf4bd8c6f0968acab0e2e0ee4'
+            '9c6c4d27d59638d0569ea09a97138bfcfb219f17cdf1138be141380e6654f302'
+            '834bd254b56ab71d73f59b3221f056c72f559553c04718e350ab2a3e2991afe0'
+            'ad6344badc91ad0630caacde83f7f9b97276f80d26a20619a87952be65492c65'
+            '2a4c9c8f4e96a607f362acbae387a3c2f00151d78dd7b6711dcc190c154b662a'
+            'd14bc7f688ee639073a3a16743df642f424070d06d59aed2c00cd6b5de1d3b9b'
+            'bccc916758d03eacd50aaebba2b734e3faa1c693ae6df10f847c64d501eee026'
+            '9fb3a3938a41ee7cb5ea09c70277d901824f9c4c6e618bdf3a2579c01d109aa5'
+            '53a0bcfdf15ae1e5634a4c8d84943b1eb460597dbe06ff0561b2a92c7bbb027e'
+            'e0b593db353d2cf78e7bb66ea321dd8b3c5d8cdeb71d4a5eb8c31b052b5f12f7'
+            '05dace9eb14c25a5d659957adcc39202eeef8ee02209f58ee85183c16bef43a7'
+            '034fdb8c69749bae66a084a716c4861433d8e2be3ffe05b31793a3b538e1218e'
+            '093c30926bf9e93491ca43878b8a19d2b39a34b8bc1a9f89b2004dd1671923f8')

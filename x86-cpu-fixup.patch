@@ -1,0 +1,241 @@
+From b89b41d0b8414690ec0030c134b8bde209e6d06c Mon Sep 17 00:00:00 2001
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Date: Mon, 31 Jul 2017 10:51:58 +0200
+Subject: x86/cpu/amd: Limit cpu_core_id fixup to families older than F17h
+
+Current cpu_core_id fixup causes downcored F17h configurations to be
+incorrect:
+
+  NODE: 0
+  processor  0 core id : 0
+  processor  1 core id : 1
+  processor  2 core id : 2
+  processor  3 core id : 4
+  processor  4 core id : 5
+  processor  5 core id : 0
+
+  NODE: 1
+  processor  6 core id : 2
+  processor  7 core id : 3
+  processor  8 core id : 4
+  processor  9 core id : 0
+  processor 10 core id : 1
+  processor 11 core id : 2
+
+Code that relies on the cpu_core_id, like match_smt(), for example,
+which builds the thread siblings masks used by the scheduler, is
+mislead.
+
+So, limit the fixup to pre-F17h machines. The new value for cpu_core_id
+for F17h and later will represent the CPUID_Fn8000001E_EBX[CoreId],
+which is guaranteed to be unique for each core within a socket.
+
+This way we have:
+
+  NODE: 0
+  processor  0 core id : 0
+  processor  1 core id : 1
+  processor  2 core id : 2
+  processor  3 core id : 4
+  processor  4 core id : 5
+  processor  5 core id : 6
+
+  NODE: 1
+  processor  6 core id : 8
+  processor  7 core id : 9
+  processor  8 core id : 10
+  processor  9 core id : 12
+  processor 10 core id : 13
+  processor 11 core id : 14
+
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+[ Heavily massaged. ]
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Yazen Ghannam <Yazen.Ghannam@amd.com>
+Link: http://lkml.kernel.org/r/20170731085159.9455-2-bp@alien8.de
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ arch/x86/kernel/cpu/amd.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 3b9e220..82d571c 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -298,6 +298,22 @@ static int nearby_node(int apicid)
+ #endif
+ 
+ /*
++ * Fix up cpu_core_id for pre-F17h systems to be in the
++ * [0 .. cores_per_node - 1] range. Not really needed but
++ * kept so as not to break existing setups.
++ */
++static void legacy_fixup_core_id(struct cpuinfo_x86 *c)
++{
++	u32 cus_per_node;
++
++	if (c->x86 >= 0x17)
++		return;
++
++	cus_per_node = c->x86_max_cores / nodes_per_socket;
++	c->cpu_core_id %= cus_per_node;
++}
++
++/*
+  * Fixup core topology information for
+  * (1) AMD multi-node processors
+  *     Assumption: Number of cores in each internal node is the same.
+@@ -354,15 +370,9 @@ static void amd_get_topology(struct cpuinfo_x86 *c)
+ 	} else
+ 		return;
+ 
+-	/* fixup multi-node processor information */
+ 	if (nodes_per_socket > 1) {
+-		u32 cus_per_node;
+-
+ 		set_cpu_cap(c, X86_FEATURE_AMD_DCM);
+-		cus_per_node = c->x86_max_cores / nodes_per_socket;
+-
+-		/* core id has to be in the [0 .. cores_per_node - 1] range */
+-		c->cpu_core_id %= cus_per_node;
++		legacy_fixup_core_id(c);
+ 	}
+ }
+ #endif
+-- 
+cgit v1.1
+
+
+From 2b83809a5e6d619a780876fcaf68cdc42b50d28c Mon Sep 17 00:00:00 2001
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Date: Mon, 31 Jul 2017 10:51:59 +0200
+Subject: x86/cpu/amd: Derive L3 shared_cpu_map from cpu_llc_shared_mask
+
+For systems with X86_FEATURE_TOPOEXT, current logic uses the APIC ID
+to calculate shared_cpu_map. However, APIC IDs are not guaranteed to
+be contiguous for cores across different L3s (e.g. family17h system
+w/ downcore configuration). This breaks the logic, and results in an
+incorrect L3 shared_cpu_map.
+
+Instead, always use the previously calculated cpu_llc_shared_mask of
+each CPU to derive the L3 shared_cpu_map.
+
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Link: http://lkml.kernel.org/r/20170731085159.9455-3-bp@alien8.de
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ arch/x86/kernel/cpu/intel_cacheinfo.c | 32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/intel_cacheinfo.c b/arch/x86/kernel/cpu/intel_cacheinfo.c
+index c55fb2c..24f74932 100644
+--- a/arch/x86/kernel/cpu/intel_cacheinfo.c
++++ b/arch/x86/kernel/cpu/intel_cacheinfo.c
+@@ -811,7 +811,24 @@ static int __cache_amd_cpumap_setup(unsigned int cpu, int index,
+ 	struct cacheinfo *this_leaf;
+ 	int i, sibling;
+ 
+-	if (boot_cpu_has(X86_FEATURE_TOPOEXT)) {
++	/*
++	 * For L3, always use the pre-calculated cpu_llc_shared_mask
++	 * to derive shared_cpu_map.
++	 */
++	if (index == 3) {
++		for_each_cpu(i, cpu_llc_shared_mask(cpu)) {
++			this_cpu_ci = get_cpu_cacheinfo(i);
++			if (!this_cpu_ci->info_list)
++				continue;
++			this_leaf = this_cpu_ci->info_list + index;
++			for_each_cpu(sibling, cpu_llc_shared_mask(cpu)) {
++				if (!cpu_online(sibling))
++					continue;
++				cpumask_set_cpu(sibling,
++						&this_leaf->shared_cpu_map);
++			}
++		}
++	} else if (boot_cpu_has(X86_FEATURE_TOPOEXT)) {
+ 		unsigned int apicid, nshared, first, last;
+ 
+ 		this_leaf = this_cpu_ci->info_list + index;
+@@ -839,19 +856,6 @@ static int __cache_amd_cpumap_setup(unsigned int cpu, int index,
+ 						&this_leaf->shared_cpu_map);
+ 			}
+ 		}
+-	} else if (index == 3) {
+-		for_each_cpu(i, cpu_llc_shared_mask(cpu)) {
+-			this_cpu_ci = get_cpu_cacheinfo(i);
+-			if (!this_cpu_ci->info_list)
+-				continue;
+-			this_leaf = this_cpu_ci->info_list + index;
+-			for_each_cpu(sibling, cpu_llc_shared_mask(cpu)) {
+-				if (!cpu_online(sibling))
+-					continue;
+-				cpumask_set_cpu(sibling,
+-						&this_leaf->shared_cpu_map);
+-			}
+-		}
+ 	} else
+ 		return 0;
+ 
+-- 
+cgit v1.1
+
+
+From aac64f7de999d5a7fff55f49434fdd87df919829 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 11 Aug 2017 13:19:11 +0200
+Subject: x86/cpu/amd: Hide unused legacy_fixup_core_id() function
+
+The newly introduced function is only used when CONFIG_SMP is set:
+
+  arch/x86/kernel/cpu/amd.c:305:13: warning: 'legacy_fixup_core_id' defined but not used
+
+This moves the existing #ifdef around the caller so it covers
+legacy_fixup_core_id() as well.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Emanuel Czirai <icanrealizeum@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Yazen Ghannam <Yazen.Ghannam@amd.com>
+Fixes: b89b41d0b841 ("x86/cpu/amd: Limit cpu_core_id fixup to families older than F17h")
+Link: http://lkml.kernel.org/r/20170811111937.2006128-1-arnd@arndb.de
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ arch/x86/kernel/cpu/amd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 82d571c..e44338d 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -297,6 +297,7 @@ static int nearby_node(int apicid)
+ }
+ #endif
+ 
++#ifdef CONFIG_SMP
+ /*
+  * Fix up cpu_core_id for pre-F17h systems to be in the
+  * [0 .. cores_per_node - 1] range. Not really needed but
+@@ -319,7 +320,6 @@ static void legacy_fixup_core_id(struct cpuinfo_x86 *c)
+  *     Assumption: Number of cores in each internal node is the same.
+  * (2) AMD processors supporting compute units
+  */
+-#ifdef CONFIG_SMP
+ static void amd_get_topology(struct cpuinfo_x86 *c)
+ {
+ 	u8 node_id;
+-- 
+cgit v1.1
+
