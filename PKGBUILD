@@ -5,7 +5,7 @@
 pkgbase=linux-ryzen
 _srcname=linux-4.13
 pkgver=4.13.12
-pkgrel=1
+pkgrel=2
 arch=('i686' 'x86_64')
 url="https://www.kernel.org/"
 license=('GPL2')
@@ -29,6 +29,7 @@ source=("https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
         'amd-svm-avic-0001.patch'
         'amd-svm-avic-0002.patch'
         'amd-svm-avic-0003.patch'
+        'amd-cpb.patch'
         'x86-cpu-fixup.patch'
         'nct6776-fan6.patch')
 
@@ -261,5 +262,6 @@ sha256sums=('2db3d6066c3ad93eb25b973a3d2951e022a7e975ee2fa7cbe5bddf84d9a49a2c'
             '53a0bcfdf15ae1e5634a4c8d84943b1eb460597dbe06ff0561b2a92c7bbb027e'
             'e0b593db353d2cf78e7bb66ea321dd8b3c5d8cdeb71d4a5eb8c31b052b5f12f7'
             '05dace9eb14c25a5d659957adcc39202eeef8ee02209f58ee85183c16bef43a7'
+            'dbec073f92683400d0878c69daff6514da737c78161e63ef5ada74a3f7ea34b1'
             '034fdb8c69749bae66a084a716c4861433d8e2be3ffe05b31793a3b538e1218e'
             '093c30926bf9e93491ca43878b8a19d2b39a34b8bc1a9f89b2004dd1671923f8')
