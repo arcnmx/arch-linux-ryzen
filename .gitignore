@@ -4,3 +4,4 @@
 /*.tar.*
 /*.sign
 /patch-*.xz
+/graysky-gcctunes-4.14.patch
