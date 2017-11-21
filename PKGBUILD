@@ -4,7 +4,7 @@
 
 pkgbase=linux-ryzen
 _srcname=linux-4.14
-pkgver=4.14
+pkgver=4.14.1
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
@@ -14,8 +14,8 @@ options=('!strip')
 source=(
   "https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
   "https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.sign"
-  #"https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.xz"
-  #"https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.sign"
+  "https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.xz"
+  "https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.sign"
   'config'         # the main kernel config file
   '60-linux.hook'  # pacman hook for depmod
   '90-linux.hook'  # pacman hook for initramfs regeneration
@@ -41,7 +41,7 @@ prepare() {
   cd ${_srcname}
 
   # add upstream patch
-  #patch -p1 -i ../patch-${pkgver}
+  patch -p1 -i ../patch-${pkgver}
 
   # amd patches
   patch -Np1 -i ../amd-svm-pat.patch
@@ -108,32 +108,26 @@ _package() {
   _basekernel=${_kernver%%-*}
   _basekernel=${_basekernel%.*}
 
-  mkdir -p "${pkgdir}"/{boot,lib/{modules,firmware},usr}
-  make LOCALVERSION= INSTALL_MOD_PATH="${pkgdir}" modules_install
+  mkdir -p "${pkgdir}"/{boot,usr/lib/modules}
+  make LOCALVERSION= INSTALL_MOD_PATH="${pkgdir}/usr" modules_install
   cp arch/x86/boot/bzImage "${pkgdir}/boot/vmlinuz-${pkgbase}"
 
   # make room for external modules
   local _extramodules="extramodules-${_basekernel}${_kernelname:--ARCH}"
-  ln -s "../${_extramodules}" "${pkgdir}/lib/modules/${_kernver}/extramodules"
+  ln -s "../${_extramodules}" "${pkgdir}/usr/lib/modules/${_kernver}/extramodules"
 
   # add real version for building modules and running depmod from hook
   echo "${_kernver}" |
-    install -Dm644 /dev/stdin "${pkgdir}/lib/modules/${_extramodules}/version"
+    install -Dm644 /dev/stdin "${pkgdir}/usr/lib/modules/${_extramodules}/version"
 
   # remove build and source links
-  rm "${pkgdir}"/lib/modules/${_kernver}/{source,build}
-
-  # remove the firmware
-  rm -r "${pkgdir}/lib/firmware"
+  rm "${pkgdir}"/usr/lib/modules/${_kernver}/{source,build}
 
   # now we call depmod...
-  depmod -b "${pkgdir}" -F System.map "${_kernver}"
+  depmod -b "${pkgdir}/usr" -F System.map "${_kernver}"
 
   # add vmlinux
-  install -Dt "${pkgdir}/lib/modules/${_kernver}/build" -m644 vmlinux
-
-  # move module tree /lib -> /usr/lib
-  mv -t "${pkgdir}/usr" "${pkgdir}/lib"
+  install -Dt "${pkgdir}/usr/lib/modules/${_kernver}/build" -m644 vmlinux
 
   # sed expression for following substitutions
   local _subst="
@@ -182,7 +176,6 @@ _package-headers() {
   install -Dt "${_builddir}/drivers/media/dvb-core" -m644 drivers/media/dvb-core/*.h
 
   # http://bugs.archlinux.org/task/13146
-  install -Dt "${_builddir}/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/lgdt330x.h
   install -Dt "${_builddir}/drivers/media/i2c" -m644 drivers/media/i2c/msp3400-driver.h
 
   # http://bugs.archlinux.org/task/20402
@@ -251,7 +244,9 @@ done
 # makepkg -g >> PKGBUILD
 sha256sums=('f81d59477e90a130857ce18dc02f4fbe5725854911db1e7ba770c7cd350f96a7'
             'SKIP'
-            'a68e94064f040d60e8e4c3380efeee085b54d252d527e960dd17ac688505d5b6'
+            '5af72b487fbcc8e7fd3f5392271490c8498ffb2048e77abaf406971a7382f8d7'
+            'SKIP'
+            '038333234e2ddf53062d620ecc1bfa57d8d92b5d8080c9cb6476eb8ebe29d768'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'ad6344badc91ad0630caacde83f7f9b97276f80d26a20619a87952be65492c65'
