@@ -22,7 +22,6 @@ source=(
   'linux.preset'   # standard config files for mkinitcpio ramdisk
   '0001-platform-x86-hp-wmi-Fix-tablet-mode-detection-for-co.patch'
   # amd patches
-  'amd-svm-pat.patch'
   'k10temp-0001.patch'
   'k10temp-0002.patch'
   'k10temp-0003.patch'
@@ -44,7 +43,6 @@ prepare() {
   patch -p1 -i ../patch-${pkgver}
 
   # amd patches
-  patch -Np1 -i ../amd-svm-pat.patch
   patch -Np1 -i ../k10temp-0001.patch
   patch -Np1 -i ../k10temp-0002.patch
   patch -Np1 -i ../k10temp-0003.patch
@@ -251,7 +249,6 @@ sha256sums=('f81d59477e90a130857ce18dc02f4fbe5725854911db1e7ba770c7cd350f96a7'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'ad6344badc91ad0630caacde83f7f9b97276f80d26a20619a87952be65492c65'
             '6f1d9b6a119bfab150a0bc1f550609dd9290328df709b67c984f0a6b0abe8afd'
-            '2a4c9c8f4e96a607f362acbae387a3c2f00151d78dd7b6711dcc190c154b662a'
             'd14bc7f688ee639073a3a16743df642f424070d06d59aed2c00cd6b5de1d3b9b'
             'bccc916758d03eacd50aaebba2b734e3faa1c693ae6df10f847c64d501eee026'
             '9fb3a3938a41ee7cb5ea09c70277d901824f9c4c6e618bdf3a2579c01d109aa5'
