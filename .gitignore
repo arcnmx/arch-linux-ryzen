@@ -1,7 +1,6 @@
-/pkg/
 /src/
-/*.pkg*
-/*.tar.*
+/pkg/
+/*.xz
 /*.sign
-/patch-*.xz
+/*.pkg*
 /graysky-gcctunes-4.14.patch
