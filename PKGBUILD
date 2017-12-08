@@ -21,6 +21,7 @@ source=(
   '90-linux.hook'  # pacman hook for initramfs regeneration
   'linux.preset'   # standard config files for mkinitcpio ramdisk
   0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
+  'ubuntu-unprivileged-overlayfs.patch'
   # amd patches
   'k10temp-0001.patch'
   'k10temp-0002.patch'
@@ -56,6 +57,7 @@ prepare() {
 
   # disable USER_NS for non-root users by default
   patch -Np1 -i ../0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
+  patch -Np1 -i ../ubuntu-unprivileged-overlayfs.patch
 
   cp -Tf ../config .config
 
@@ -249,6 +251,7 @@ sha256sums=('f81d59477e90a130857ce18dc02f4fbe5725854911db1e7ba770c7cd350f96a7'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'ad6344badc91ad0630caacde83f7f9b97276f80d26a20619a87952be65492c65'
             '37b86ca3de148a34258e3176dbf41488d9dbd19e93adbd22a062b3c41332ce85'
+            '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
             'd14bc7f688ee639073a3a16743df642f424070d06d59aed2c00cd6b5de1d3b9b'
             'bccc916758d03eacd50aaebba2b734e3faa1c693ae6df10f847c64d501eee026'
             '9fb3a3938a41ee7cb5ea09c70277d901824f9c4c6e618bdf3a2579c01d109aa5'
