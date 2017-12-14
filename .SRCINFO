@@ -26,6 +26,7 @@ pkgbase = linux-ryzen
 	source = k10temp-0002.patch
 	source = k10temp-0003.patch
 	source = nct6776-fan6.patch
+	source = k10smt.patch
 	source = graysky-gcctunes-4.14.patch::https://github.com/pfactum/pf-kernel/commit/d21c4ae7a45f2adbf27992f59389b948428b6c15.patch
 	validpgpkeys = ABAF11C65A2970B130ABE3C479BE3E4300411886
 	validpgpkeys = 647F28654894E3BD457199BE38DBBDC86092693E
@@ -45,6 +46,7 @@ pkgbase = linux-ryzen
 	sha256sums = bccc916758d03eacd50aaebba2b734e3faa1c693ae6df10f847c64d501eee026
 	sha256sums = 9fb3a3938a41ee7cb5ea09c70277d901824f9c4c6e618bdf3a2579c01d109aa5
 	sha256sums = 093c30926bf9e93491ca43878b8a19d2b39a34b8bc1a9f89b2004dd1671923f8
+	sha256sums = 2f9d78a2573ace056b603252dd681f1bed3d1c5533de4524b9b7c0e4181f3d25
 	sha256sums = 0bcb9e8d546181fd455c53a0b76f0d50607d2e5fef6afcc0aa9130ee7cfed9b0
 
 pkgname = linux-ryzen

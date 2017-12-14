@@ -29,6 +29,7 @@ source=(
   'k10temp-0002.patch'
   'k10temp-0003.patch'
   'nct6776-fan6.patch'
+  'k10smt.patch'
   'graysky-gcctunes-4.14.patch::https://github.com/pfactum/pf-kernel/commit/d21c4ae7a45f2adbf27992f59389b948428b6c15.patch'
 )
 
@@ -49,6 +50,7 @@ prepare() {
   patch -Np1 -i ../k10temp-0001.patch
   patch -Np1 -i ../k10temp-0002.patch
   patch -Np1 -i ../k10temp-0003.patch
+  patch -Np1 -i ../k10smt.patch
   patch -Np1 -i ../nct6776-fan6.patch
   patch -Np1 -i ../graysky-gcctunes-4.14.patch
 
@@ -266,4 +268,5 @@ sha256sums=('f81d59477e90a130857ce18dc02f4fbe5725854911db1e7ba770c7cd350f96a7'
             'bccc916758d03eacd50aaebba2b734e3faa1c693ae6df10f847c64d501eee026'
             '9fb3a3938a41ee7cb5ea09c70277d901824f9c4c6e618bdf3a2579c01d109aa5'
             '093c30926bf9e93491ca43878b8a19d2b39a34b8bc1a9f89b2004dd1671923f8'
+            '2f9d78a2573ace056b603252dd681f1bed3d1c5533de4524b9b7c0e4181f3d25'
             '0bcb9e8d546181fd455c53a0b76f0d50607d2e5fef6afcc0aa9130ee7cfed9b0')
