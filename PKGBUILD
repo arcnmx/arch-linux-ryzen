@@ -4,7 +4,7 @@
 
 pkgbase=linux-ryzen
 _srcname=linux-4.14
-pkgver=4.14.8
+pkgver=4.14.9
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
@@ -23,6 +23,10 @@ source=(
   0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
   0001-e1000e-Fix-e1000_check_for_copper_link_ich8lan-retur.patch
   0002-dccp-CVE-2017-8824-use-after-free-in-DCCP-code.patch
+  0001-Revert-xfrm-Fix-stack-out-of-bounds-read-in-xfrm_sta.patch
+  0002-xfrm-Fix-stack-out-of-bounds-read-on-socket-policy-l.patch
+  0003-cgroup-fix-css_task_iter-crash-on-CSS_TASK_ITER_PROC.patch
+  0001-ALSA-usb-audio-Fix-the-missing-ctl-name-suffix-at-pa.patch
   'ubuntu-unprivileged-overlayfs.patch'
   # amd patches
   'k10temp-0001.patch'
@@ -68,6 +72,16 @@ prepare() {
 
   # https://nvd.nist.gov/vuln/detail/CVE-2017-8824
   patch -Np1 -i ../0002-dccp-CVE-2017-8824-use-after-free-in-DCCP-code.patch
+
+  # https://bugs.archlinux.org/task/56605
+  patch -Np1 -i ../0001-Revert-xfrm-Fix-stack-out-of-bounds-read-in-xfrm_sta.patch
+  patch -Np1 -i ../0002-xfrm-Fix-stack-out-of-bounds-read-on-socket-policy-l.patch
+
+  # https://bugs.archlinux.org/task/56846
+  patch -Np1 -i ../0003-cgroup-fix-css_task_iter-crash-on-CSS_TASK_ITER_PROC.patch
+
+  # https://bugs.archlinux.org/task/56830
+  patch -Np1 -i ../0001-ALSA-usb-audio-Fix-the-missing-ctl-name-suffix-at-pa.patch
 
   cp -Tf ../config .config
 
@@ -254,15 +268,19 @@ done
 # makepkg -g >> PKGBUILD
 sha256sums=('f81d59477e90a130857ce18dc02f4fbe5725854911db1e7ba770c7cd350f96a7'
             'SKIP'
-            '42eaed731b716244514b765c199e8f675d79287d7630e5c2911053ad52a1fa0a'
+            '5edc955bb67b04c7ed426b1df17a3e322e32ad9fdda9c6abb53ab6eca7faf704'
             'SKIP'
-            'fdb5f64c1654d528c31cd71ae49fb7a9300459715fb60dcdd786c8c62baec8ce'
+            'bf9f665bede1553e67fed45244bce451100037cea45aeb3fcf0cb9fc02a2e616'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'ad6344badc91ad0630caacde83f7f9b97276f80d26a20619a87952be65492c65'
             '37b86ca3de148a34258e3176dbf41488d9dbd19e93adbd22a062b3c41332ce85'
             'c6e7db7dfd6a07e1fd0e20c3a5f0f315f9c2a366fe42214918b756f9a1c9bfa3'
             '1d69940c6bf1731fa1d1da29b32ec4f594fa360118fe7b128c9810285ebf13e2'
+            'ed3266ab03f836f57de0faf8a10ffd7566c909515c2649de99adaab2fac4aa32'
+            '64a014f7e1b4588728b3ea9538beee67ec63fb792d890c7be9cc13ddc2121b00'
+            '3d4c41086c077fbd515d04f5e59c0c258f700433c5da3365d960b696c2e56efb'
+            '95f0d0a94983b0dafd295f660a663f9be5ef2fcb9646098426a5d12b59f50638'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
             'd14bc7f688ee639073a3a16743df642f424070d06d59aed2c00cd6b5de1d3b9b'
             'bccc916758d03eacd50aaebba2b734e3faa1c693ae6df10f847c64d501eee026'
