@@ -4,7 +4,7 @@
 
 pkgbase=linux-ryzen
 _srcname=linux-4.14
-pkgver=4.14.9
+pkgver=4.14.10
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
@@ -26,7 +26,6 @@ source=(
   0001-Revert-xfrm-Fix-stack-out-of-bounds-read-in-xfrm_sta.patch
   0002-xfrm-Fix-stack-out-of-bounds-read-on-socket-policy-l.patch
   0003-cgroup-fix-css_task_iter-crash-on-CSS_TASK_ITER_PROC.patch
-  0001-ALSA-usb-audio-Fix-the-missing-ctl-name-suffix-at-pa.patch
   'ubuntu-unprivileged-overlayfs.patch'
   # amd patches
   'k10temp-0001.patch'
@@ -49,6 +48,7 @@ prepare() {
 
   # add upstream patch
   patch -p1 -i ../patch-${pkgver}
+  chmod +x tools/objtool/sync-check.sh  # GNU patch doesn't support git-style file mode
 
   # amd patches
   patch -Np1 -i ../k10temp-0001.patch
@@ -79,9 +79,6 @@ prepare() {
 
   # https://bugs.archlinux.org/task/56846
   patch -Np1 -i ../0003-cgroup-fix-css_task_iter-crash-on-CSS_TASK_ITER_PROC.patch
-
-  # https://bugs.archlinux.org/task/56830
-  patch -Np1 -i ../0001-ALSA-usb-audio-Fix-the-missing-ctl-name-suffix-at-pa.patch
 
   cp -Tf ../config .config
 
@@ -268,7 +265,7 @@ done
 # makepkg -g >> PKGBUILD
 sha256sums=('f81d59477e90a130857ce18dc02f4fbe5725854911db1e7ba770c7cd350f96a7'
             'SKIP'
-            '5edc955bb67b04c7ed426b1df17a3e322e32ad9fdda9c6abb53ab6eca7faf704'
+            '16f560aa713b46c707f04a226f67dc31fdd280aae57dd19e0413d61df5336c74'
             'SKIP'
             'bf9f665bede1553e67fed45244bce451100037cea45aeb3fcf0cb9fc02a2e616'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
@@ -280,7 +277,6 @@ sha256sums=('f81d59477e90a130857ce18dc02f4fbe5725854911db1e7ba770c7cd350f96a7'
             'ed3266ab03f836f57de0faf8a10ffd7566c909515c2649de99adaab2fac4aa32'
             '64a014f7e1b4588728b3ea9538beee67ec63fb792d890c7be9cc13ddc2121b00'
             '3d4c41086c077fbd515d04f5e59c0c258f700433c5da3365d960b696c2e56efb'
-            '95f0d0a94983b0dafd295f660a663f9be5ef2fcb9646098426a5d12b59f50638'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
             'd14bc7f688ee639073a3a16743df642f424070d06d59aed2c00cd6b5de1d3b9b'
             'bccc916758d03eacd50aaebba2b734e3faa1c693ae6df10f847c64d501eee026'
