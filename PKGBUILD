@@ -27,6 +27,9 @@ source=(
   0005-cgroup-fix-css_task_iter-crash-on-CSS_TASK_ITER_PROC.patch
   0006-drm-i915-edp-Only-use-the-alternate-fixed-mode-if-it.patch
   'ubuntu-unprivileged-overlayfs.patch'
+  # vfio patches
+  'i915-vga-arbiter.patch'
+  'add-acs-overrides.patch'
   # amd patches
   'k10temp-0001.patch'
   'k10temp-0002.patch'
@@ -57,6 +60,10 @@ prepare() {
   patch -Np1 -i ../k10smt.patch
   patch -Np1 -i ../nct6776-fan6.patch
   patch -Np1 -i ../graysky-gcctunes-4.14.patch
+
+  # vfio patches
+  patch -Np1 -i ../i915-vga-arbiter.patch
+  patch -Np1 -i ../add-acs-overrides.patch
 
   # security patches
 
@@ -280,6 +287,8 @@ sha256sums=('f81d59477e90a130857ce18dc02f4fbe5725854911db1e7ba770c7cd350f96a7'
             'c3d743a0e193294bc5fbae65e7ba69fd997cd8b2ded9c9a45c5151d71d9cfb95'
             'ec7342aab478af79a17ff65cf65bbd6744b0caee8f66c77a39bba61a78e6576d'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
+            'eaf70cd805cdb43cf6227d354a6d54f67645b6df99e06136a8055d7494d7439c'
+            'c238969a3c3a44b41c868a883880d8c4dc475e457427e91c649e9f24170b2c7d'
             'd14bc7f688ee639073a3a16743df642f424070d06d59aed2c00cd6b5de1d3b9b'
             'bccc916758d03eacd50aaebba2b734e3faa1c693ae6df10f847c64d501eee026'
             '9fb3a3938a41ee7cb5ea09c70277d901824f9c4c6e618bdf3a2579c01d109aa5'
