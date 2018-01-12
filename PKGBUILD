@@ -4,7 +4,7 @@
 
 pkgbase=linux-ryzen
 _srcname=linux-4.14
-pkgver=4.14.12
+pkgver=4.14.13
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
@@ -232,6 +232,9 @@ _package-headers() {
   # remove files already in linux-docs package
   rm -r "${_builddir}/Documentation"
 
+  # remove now broken symlinks
+  find -L "${_builddir}" -type l -printf 'Removing %P\n' -delete
+
   # Fix permissions
   chmod -R u=rwX,go=rX "${_builddir}"
 
@@ -274,12 +277,12 @@ done
 # makepkg -g >> PKGBUILD
 sha256sums=('f81d59477e90a130857ce18dc02f4fbe5725854911db1e7ba770c7cd350f96a7'
             'SKIP'
-            'da5d8db44b0988e4c45346899d3f5a51f8bd6c25f14e729615ca9ff9f17bdefd'
+            'ce897f467e80452f29d7a7a8809e8585ea12192a2c32e4d18578f64b043e802e'
             'SKIP'
             '3ccc0b1b48690e190a526a158902ab00906551468148f4fbc8848019393b3eb1'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
-            'ad6344badc91ad0630caacde83f7f9b97276f80d26a20619a87952be65492c65'
+            'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
             'd8a865a11665424b21fe6be9265eb287ee6d5646261a486954ddf3a4ee87e78f'
             '9251c03da9d4b64591d77f490ff144d4ba514e66e74294ada541bf827306c9c4'
             '6ce57b8dba43db4c6ee167a8891167b7d1e1e101d5112e776113eb37de5c37d8'
