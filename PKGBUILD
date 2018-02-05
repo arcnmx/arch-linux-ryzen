@@ -5,7 +5,7 @@
 pkgbase=linux-ryzen
 _srcname=linux-4.15
 pkgver=4.15.1
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=('GPL2')
@@ -253,7 +253,7 @@ sha256sums=('5a26478906d5005f4f809402e981518d2b8844949199f60c4b6e1f986ca2a769'
             'SKIP'
             '202a0a34f221ae335de096c292927d7a7d4bcdbc2dd46d43b8a5f6420f95a0cf'
             'SKIP'
-            '04826f0e3d1ffbbe783242927f3a90b280bbf581eebb729ce46c8ab3d4b04455'
+            'bba819173e79c1a6ff0a32e9b46ac1180be34737d84fd7413a80b8033b30495c'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
