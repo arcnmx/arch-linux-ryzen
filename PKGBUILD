@@ -52,7 +52,7 @@ prepare() {
   patch -Np1 -i ../graysky-gcctunes-4.15.patch
 
   # vfio patches
-  #patch -Np1 -i ../i915-vga-arbiter.patch
+  patch -Np1 -i ../i915-vga-arbiter.patch
   patch -Np1 -i ../add-acs-overrides.patch
 
   # security patches
@@ -262,8 +262,8 @@ sha256sums=('5a26478906d5005f4f809402e981518d2b8844949199f60c4b6e1f986ca2a769'
             '7b7363b53c68f52b119df994c9c08d4f29271b408f021366ab23f862518bd9bc'
             'ac996455cddccc312d93e63845d92b2d8ab8fb53208a221948d28c76c678d215'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
-            'eaf70cd805cdb43cf6227d354a6d54f67645b6df99e06136a8055d7494d7439c'
-            'c238969a3c3a44b41c868a883880d8c4dc475e457427e91c649e9f24170b2c7d'
+            '7cb4a5da6bf551dbb2db2e0b4e4d0774ee98cc30d9e617e030b27e6cba3e6293'
+            '1a4a992199d4d70f7f35735f63a634bb605c2b594b7352ad5fd54512737d2784'
             '093c30926bf9e93491ca43878b8a19d2b39a34b8bc1a9f89b2004dd1671923f8'
             '2f9d78a2573ace056b603252dd681f1bed3d1c5533de4524b9b7c0e4181f3d25'
             'ff34439a00529e2a425f30854f323141d57e38c4f75b2557c76a71d3c95cfd31'
