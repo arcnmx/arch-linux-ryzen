@@ -29,7 +29,7 @@ source=(
   'nct6776-fan6.patch'
   'k10smt.patch'
   'efifb-nobar.patch'
-  'graysky-gcctunes-4.15.patch::https://github.com/pfactum/pf-kernel/commit/ca030bdfc8e46f0831cf970d0405ee288bf71cb5.patch'
+  'https://github.com/graysky2/kernel_gcc_patch/raw/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch'
 )
 
 validpgpkeys=(
@@ -50,7 +50,7 @@ prepare() {
   patch -Np1 -i ../k10smt.patch
   patch -Np1 -i ../efifb-nobar.patch
   patch -Np1 -i ../nct6776-fan6.patch
-  patch -Np1 -i ../graysky-gcctunes-4.15.patch
+  patch -Np1 -i ../enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch
 
   # vfio patches
   patch -Np1 -i ../i915-vga-arbiter.patch
@@ -272,4 +272,4 @@ sha256sums=('5a26478906d5005f4f809402e981518d2b8844949199f60c4b6e1f986ca2a769'
             '093c30926bf9e93491ca43878b8a19d2b39a34b8bc1a9f89b2004dd1671923f8'
             '2f9d78a2573ace056b603252dd681f1bed3d1c5533de4524b9b7c0e4181f3d25'
             'ff34439a00529e2a425f30854f323141d57e38c4f75b2557c76a71d3c95cfd31'
-            '8002066241464788bab2a886f5025e5f720aecc4de7b23e1a2a67c9effbe05ba')
+            '8b00041911e67654b0bd9602125853a1a94f6155c5cac4f886507554c8324ee8')

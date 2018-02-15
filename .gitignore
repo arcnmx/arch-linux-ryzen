@@ -3,4 +3,4 @@
 /*.xz
 /*.sign
 /*.pkg*
-/graysky-gcctunes-*.patch
+/enable_additional_cpu_optimizations_for_gcc_*.patch
