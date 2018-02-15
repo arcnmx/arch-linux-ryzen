@@ -5,7 +5,7 @@
 pkgbase=linux-ryzen
 _srcname=linux-4.15
 pkgver=4.15.3
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=('GPL2')
@@ -21,6 +21,7 @@ source=(
   0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
   0002-drm-i915-edp-Only-use-the-alternate-fixed-mode-if-it.patch
   0003-ssb-Do-not-disable-PCI-host-on-non-Mips.patch
+  0004-x86-xen-init-gs-very-early-to-avoid-page-faults-with.patch
   'ubuntu-unprivileged-overlayfs.patch'
   # vfio patches
   'i915-vga-arbiter.patch'
@@ -70,6 +71,9 @@ prepare() {
 
   # https://bugs.archlinux.org/task/57327
   patch -Np1 -i ../0003-ssb-Do-not-disable-PCI-host-on-non-Mips.patch
+
+  # https://bugs.archlinux.org/task/57500
+  patch -Np1 -i ../0004-x86-xen-init-gs-very-early-to-avoid-page-faults-with.patch
 
   cat ../config - >.config <<END
 CONFIG_LOCALVERSION="${_kernelname}"
@@ -259,13 +263,14 @@ sha256sums=('5a26478906d5005f4f809402e981518d2b8844949199f60c4b6e1f986ca2a769'
             'SKIP'
             '6dd42389603bc6c83d2e6db1d736303e41d26cef479cad926b87711f261c9c35'
             'SKIP'
-            '9938186578e2181e1be3fc54fb73a91e929970dfc5405aa5f876cd8a9d686b73'
+            'ed0267c5e6e6aeeb29ae1c70eebeb19b5a0db2dd8ad2808aac6bb69b2a0c7819'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
-            'b20e25656c9423591afd0325fe26320f50bc3421ff204acbfe5dd88ffb3866fe'
-            '68575230693b374eb68e6100e719c71a196db57fe0ac79ddae02fe72b404e09e'
-            'b21406c060cf601f879528cfa1b83f524c44d8ecd99689c331a7c6326653d0be'
+            '95bda0b206b917ee907375bb0015b8f04f668bfea74706ce614442326a6be442'
+            '2a9adeea2d45513ee3ef0af9fb91c254f14500195e801581b55abcf4ff228eb0'
+            '990653b33a736b3941f03d8ca49795109f16507afa34b57dbce3c8e2d2fb26ca'
+            '13bc8392b26d1ce0182060fba0f37f74dd7cdc6fff2fdea3240fc4e755621277'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
             '7cb4a5da6bf551dbb2db2e0b4e4d0774ee98cc30d9e617e030b27e6cba3e6293'
             '1a4a992199d4d70f7f35735f63a634bb605c2b594b7352ad5fd54512737d2784'
