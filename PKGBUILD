@@ -4,8 +4,8 @@
 
 pkgbase=linux-ryzen
 _srcname=linux-4.16
-pkgver=4.16
-pkgrel=2
+pkgver=4.16.1
+pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=('GPL2')
@@ -13,7 +13,7 @@ makedepends=('xmlto' 'kmod' 'inetutils' 'bc' 'libelf')
 options=('!strip')
 source=(
   https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.{xz,sign}
-  #https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.{xz,sign}
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.{xz,sign}
   config         # the main kernel config file
   60-linux.hook  # pacman hook for depmod
   90-linux.hook  # pacman hook for initramfs regeneration
@@ -21,6 +21,7 @@ source=(
   0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
   0002-drm-i915-edp-Only-use-the-alternate-fixed-mode-if-it.patch
   0003-Partially-revert-swiotlb-remove-various-exports.patch
+  0004-Fix-vboxguest-on-guests-with-more-than-4G-RAM.patch
   'ubuntu-unprivileged-overlayfs.patch'
   # vfio patches
   'i915-vga-arbiter.patch'
@@ -43,7 +44,7 @@ prepare() {
   cd ${_srcname}
 
   # add upstream patch
-  #patch -p1 -i ../patch-${pkgver}
+  patch -p1 -i ../patch-${pkgver}
 
   # amd patches
   patch -Np1 -i ../efifb-nobar.patch
@@ -68,6 +69,9 @@ prepare() {
 
   # NVIDIA driver compat
   patch -Np1 -i ../0003-Partially-revert-swiotlb-remove-various-exports.patch
+
+  # https://bugs.archlinux.org/task/58153
+  patch -Np1 -i ../0004-Fix-vboxguest-on-guests-with-more-than-4G-RAM.patch
 
   cat ../config - >.config <<END
 CONFIG_LOCALVERSION="${_kernelname}"
@@ -254,13 +258,16 @@ done
 # makepkg -g >> PKGBUILD
 sha256sums=('63f6dc8e3c9f3a0273d5d6f4dca38a2413ca3a5f689329d05b750e4c87bb21b9'
             'SKIP'
-            '81bcfdfbccfe02f8d3f5e5de648294b430393d3babb642cdfd87c4e696e307d1'
+            '66931bd802eb8d9f09b1f36bb57f24abab13230469ee855e5aaa2f93be2022e0'
+            'SKIP'
+            'b01831cd2bdbd34366ce0bbdb6032b52b8978fb149358d93d1ef9933fb483652'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
-            '69be34b14df3275118e8c345d61b36b71370710c7b4f61bb3bedaff7501775f0'
-            'a4566321f73fa1448195691349d5ed0ddf30127d17213a31aa2c931e822df061'
-            'd365ce80dab359d5277bd2f8568cad50a30ab269f222ed1bb12b8d74571e24a6'
+            'b172d6cabd8f1980f5ef4b5ad7a96a34e05d99fb02ec0565a80f96719f131a04'
+            '558c2b0fa7ad1761cb1dd89d8b860436f50d515c295949c08de9288100e034f6'
+            'bc8a87cec67ecb8713d96167981c38d7ec4d93e1d2fdcb02193d704c441cff46'
+            'c0fa1a6141bf64111ab9d0af4fc63d95b03b65baa2682aee1cd794d9311062c2'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
             '7cb4a5da6bf551dbb2db2e0b4e4d0774ee98cc30d9e617e030b27e6cba3e6293'
             '1a4a992199d4d70f7f35735f63a634bb605c2b594b7352ad5fd54512737d2784'
