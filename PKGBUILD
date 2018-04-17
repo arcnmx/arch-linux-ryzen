@@ -5,7 +5,7 @@
 pkgbase=linux-ryzen
 _srcname=linux-4.16
 pkgver=4.16.2
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=('GPL2')
@@ -22,6 +22,9 @@ source=(
   0002-drm-i915-edp-Only-use-the-alternate-fixed-mode-if-it.patch
   0003-Partially-revert-swiotlb-remove-various-exports.patch
   0004-Fix-vboxguest-on-guests-with-more-than-4G-RAM.patch
+  0005-Revert-drm-amd-display-disable-CRTCs-with-NULL-FB-on.patch
+  0006-net-aquantia-Regression-on-reset-with-1.x-firmware.patch
+  0007-media-v4l2-core-fix-size-of-devnode_nums-bitarray.patch
   'ubuntu-unprivileged-overlayfs.patch'
   # vfio patches
   'i915-vga-arbiter.patch'
@@ -72,6 +75,15 @@ prepare() {
 
   # https://bugs.archlinux.org/task/58153
   patch -Np1 -i ../0004-Fix-vboxguest-on-guests-with-more-than-4G-RAM.patch
+
+  # https://bugs.archlinux.org/task/58158
+  patch -Np1 -i ../0005-Revert-drm-amd-display-disable-CRTCs-with-NULL-FB-on.patch
+
+  # https://bugs.archlinux.org/task/58174
+  patch -Np1 -i ../0006-net-aquantia-Regression-on-reset-with-1.x-firmware.patch
+
+  # https://bugs.archlinux.org/task/58205
+  patch -Np1 -i ../0007-media-v4l2-core-fix-size-of-devnode_nums-bitarray.patch
 
   cat ../config - >.config <<END
 CONFIG_LOCALVERSION="${_kernelname}"
@@ -260,14 +272,17 @@ sha256sums=('63f6dc8e3c9f3a0273d5d6f4dca38a2413ca3a5f689329d05b750e4c87bb21b9'
             'SKIP'
             'fa82ef50579ea9b71b26b2ae98460380e22a48be2524f90548947a586988e575'
             'SKIP'
-            'b01831cd2bdbd34366ce0bbdb6032b52b8978fb149358d93d1ef9933fb483652'
+            '2bc031d285c57e57a5573fd4bfc6bf6d26124b14400271e324cbf54ae34e6c6f'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
-            'b172d6cabd8f1980f5ef4b5ad7a96a34e05d99fb02ec0565a80f96719f131a04'
-            '558c2b0fa7ad1761cb1dd89d8b860436f50d515c295949c08de9288100e034f6'
-            'bc8a87cec67ecb8713d96167981c38d7ec4d93e1d2fdcb02193d704c441cff46'
-            'c0fa1a6141bf64111ab9d0af4fc63d95b03b65baa2682aee1cd794d9311062c2'
+            '6ad732db3f773de52ab544be83f22b04157a880742ab262202b01c32ee2d4995'
+            'bc300c44023cdef225f5d18fe6054cd2886c4062410d2720b2b2fd82465184f3'
+            'dcd819e630cfa7292aa38078ab16758338836ee917e82ce42c8a9aca08f2ecdb'
+            '9e93bc5bafeb978b1fb260d0cbfe15d8214ea0599dc6d771aae9ab652e223339'
+            '9fe8141703fd2b9eb8ea8f81a19a115c93684a87ee0895d042b48ce98d42c12a'
+            'e59bba13edb36ff5639ed3fd6c541e2c3d378db71dca6ea01f0aede6ab1b5700'
+            '34c7316a4e909300e14b0510dbeedc1d0acf9e43cc7c48693462e0fd98883fb2'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
             '7cb4a5da6bf551dbb2db2e0b4e4d0774ee98cc30d9e617e030b27e6cba3e6293'
             '1a4a992199d4d70f7f35735f63a634bb605c2b594b7352ad5fd54512737d2784'
