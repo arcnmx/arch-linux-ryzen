@@ -29,7 +29,6 @@ source=(
   # amd patches
   'nct6776-fan6.patch'
   'efifb-nobar.patch'
-  'k10temp-ryzen2.patch::https://github.com/groeck/k10temp/compare/c5183f6d0c48babfe722c54066b5d87cef349248...fd93b8bc15ec768915f5567fc86432d50594e25a.patch'
   'https://github.com/graysky2/kernel_gcc_patch/raw/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch'
 )
 
@@ -55,7 +54,6 @@ prepare() {
   # vfio patches
   patch -Np1 -i ../i915-vga-arbiter.patch
   patch -Np1 -i ../add-acs-overrides.patch
-  patch -Np1 -i ../../../k10temp-ryzen2.patch -d drivers/hwmon
 
   # security patches
 
@@ -275,5 +273,4 @@ sha256sums=('63f6dc8e3c9f3a0273d5d6f4dca38a2413ca3a5f689329d05b750e4c87bb21b9'
             '1a4a992199d4d70f7f35735f63a634bb605c2b594b7352ad5fd54512737d2784'
             '093c30926bf9e93491ca43878b8a19d2b39a34b8bc1a9f89b2004dd1671923f8'
             'ff34439a00529e2a425f30854f323141d57e38c4f75b2557c76a71d3c95cfd31'
-            '551ede77f6f204f6d413906433b3f4a912ae3215a210d107b88a7ff9cf6e00f5'
             'f9ccd3b7809b276b39527b2fc8384aaef0028d536118baedb6e079b743637420')
