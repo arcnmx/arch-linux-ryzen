@@ -4,7 +4,7 @@
 
 pkgbase=linux-ryzen
 _srcname=linux-4.16
-pkgver=4.16.10
+pkgver=4.16.11
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
@@ -20,8 +20,6 @@ source=(
   linux.preset   # standard config files for mkinitcpio ramdisk
   0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
   0002-drm-i915-edp-Only-use-the-alternate-fixed-mode-if-it.patch
-  0003-Partially-revert-swiotlb-remove-various-exports.patch
-  0004-xhci-Fix-USB3-NULL-pointer-dereference-at-logical-di.patch
   'ubuntu-unprivileged-overlayfs.patch'
   # vfio patches
   'i915-vga-arbiter.patch'
@@ -71,12 +69,6 @@ prepare() {
 
   # https://bugs.archlinux.org/task/56711
   patch -Np1 -i ../0002-drm-i915-edp-Only-use-the-alternate-fixed-mode-if-it.patch
-
-  # NVIDIA driver compat
-  patch -Np1 -i ../0003-Partially-revert-swiotlb-remove-various-exports.patch
-
-  # https://bugs.archlinux.org/task/58237
-  patch -Np1 -i ../0004-xhci-Fix-USB3-NULL-pointer-dereference-at-logical-di.patch
 
   cat ../config - >.config <<END
 CONFIG_LOCALVERSION="${_kernelname}"
@@ -263,16 +255,14 @@ done
 # makepkg -g >> PKGBUILD
 sha256sums=('63f6dc8e3c9f3a0273d5d6f4dca38a2413ca3a5f689329d05b750e4c87bb21b9'
             'SKIP'
-            '9fe6093be401fe0ff3f6cb3d428f137119a7befaf86d70f18c7e88871c1852d6'
+            'd0d998f193c3feeab95f1378dea15aa6ba145f591661547cc00ef16d161651fe'
             'SKIP'
             'bdda9100aceb9f9f19525a9c82602649d2a7e688ae92f65f9d5418a8425b5e53'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
-            '69241df4bd7897eb04db90e4d0a82c6e0b99b806019ba96bb885278ca8da89df'
-            '10728f672a83a515af540cafafde62346e9ccc2d14bf74e417fd2693865b1293'
-            'a81b612369e78d142ff80ec3adda36b3f94503e5a68d54282c508a112cc8dae0'
-            '052a39582f84c52b027c261fcec90325493f4d46f15647c274a58e39145deced'
+            'b01e9bd4e0f3cc2b91db1d8c043b2d85329bd0c9a9441a91d337c3c33661b658'
+            '09170daf49fe4cb720f331cd2da1c75771eb4f9f124353bf035218b1f8ca57d1'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
             '7cb4a5da6bf551dbb2db2e0b4e4d0774ee98cc30d9e617e030b27e6cba3e6293'
             '1a4a992199d4d70f7f35735f63a634bb605c2b594b7352ad5fd54512737d2784'
