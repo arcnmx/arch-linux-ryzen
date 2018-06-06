@@ -3,9 +3,9 @@
 # Maintainer: Thomas Baechler <thomas@archlinux.org>
 
 pkgbase=linux-ryzen
-_srcname=linux-4.16
-pkgver=4.16.13
-pkgrel=2
+_srcname=linux-4.17
+pkgver=4.17
+pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=('GPL2')
@@ -13,20 +13,18 @@ makedepends=('xmlto' 'kmod' 'inetutils' 'bc' 'libelf')
 options=('!strip')
 source=(
   https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.{xz,sign}
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.{xz,sign}
+  #https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.{xz,sign}
   config         # the main kernel config file
   60-linux.hook  # pacman hook for depmod
   90-linux.hook  # pacman hook for initramfs regeneration
   linux.preset   # standard config files for mkinitcpio ramdisk
   0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
-  0002-ACPI-watchdog-Prefer-iTCO_wdt-on-Lenovo-Z50-70.patch
-  0003-Revert-drm-i915-edp-Allow-alternate-fixed-mode-for-e.patch
+  0002-Revert-drm-i915-edp-Allow-alternate-fixed-mode-for-e.patch
   'ubuntu-unprivileged-overlayfs.patch'
   # vfio patches
   'i915-vga-arbiter.patch'
-  'add-acs-overrides.patch'
+  https://gitlab.com/Queuecumber/linux-acs-override/raw/master/workspaces/4.17/acso.patch
   # amd patches
-  'nct6776-fan6.patch'
   'efifb-nobar.patch'
   'https://github.com/graysky2/kernel_gcc_patch/raw/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch'
   # nvidia workaround
@@ -45,11 +43,10 @@ prepare() {
   cd ${_srcname}
 
   # add upstream patch
-  patch -p1 -i ../patch-${pkgver}
+  #patch -p1 -i ../patch-${pkgver}
 
   # amd patches
   patch -Np1 -i ../efifb-nobar.patch
-  patch -Np1 -i ../nct6776-fan6.patch
   patch -Np1 -i ../enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch
 
   # nvidia workaround
@@ -57,7 +54,7 @@ prepare() {
 
   # vfio patches
   patch -Np1 -i ../i915-vga-arbiter.patch
-  patch -Np1 -i ../add-acs-overrides.patch
+  patch -Np1 -i ../acso.patch
 
   # security patches
 
@@ -68,11 +65,8 @@ prepare() {
   patch -Np1 -i ../0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
   patch -Np1 -i ../ubuntu-unprivileged-overlayfs.patch
 
-  # https://bugs.archlinux.org/task/56780
-  patch -Np1 -i ../0002-ACPI-watchdog-Prefer-iTCO_wdt-on-Lenovo-Z50-70.patch
-
   # https://bugs.archlinux.org/task/56711
-  patch -Np1 -i ../0003-Revert-drm-i915-edp-Allow-alternate-fixed-mode-for-e.patch
+  patch -Np1 -i ../0002-Revert-drm-i915-edp-Allow-alternate-fixed-mode-for-e.patch
 
   cat ../config - >.config <<END
 CONFIG_LOCALVERSION="${_kernelname}"
@@ -257,21 +251,17 @@ done
 # vim:set ts=8 sts=2 sw=2 et:
 
 # makepkg -g >> PKGBUILD
-sha256sums=('63f6dc8e3c9f3a0273d5d6f4dca38a2413ca3a5f689329d05b750e4c87bb21b9'
+sha256sums=('9faa1dd896eaea961dc6e886697c0b3301277102e5bc976b2758f9a62d3ccd13'
             'SKIP'
-            '9efa0a74eb61240da53bd01a3a23759e0065811de53d22de7d679eabf847f323'
-            'SKIP'
-            'bdda9100aceb9f9f19525a9c82602649d2a7e688ae92f65f9d5418a8425b5e53'
+            '0f8d23e747b91a875670d2917c688dcd1ec6343da452dc8ae911e6e805040813'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
-            '8d6a5f34b3d79e75b0cb888c6bcf293f84c5cbb2757f7bdadafee7e0ea77d7dd'
-            '2454c1ee5e0f5aa119fafb4c8d3b402c5e4e10b2e868fe3e4ced3b1e2aa48446'
-            '8114295b8c07795a15b9f8eafb0f515c34661a1e05512da818a34581dd30f87e'
+            '0b77e6bef12735bc91e3f0e8232512e973688466f2e8a2c3a93502cb2d4b4eed'
+            '92615acad59cbef9fd43b2710f5a77ffea45a86543ccff1b12eb676a9c8058cc'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
             '7cb4a5da6bf551dbb2db2e0b4e4d0774ee98cc30d9e617e030b27e6cba3e6293'
-            '1a4a992199d4d70f7f35735f63a634bb605c2b594b7352ad5fd54512737d2784'
-            '093c30926bf9e93491ca43878b8a19d2b39a34b8bc1a9f89b2004dd1671923f8'
+            'd09f6d19115d2fc54d07535c62bddb667320f9d07e5b6c09eb76b26730fda5df'
             'ff34439a00529e2a425f30854f323141d57e38c4f75b2557c76a71d3c95cfd31'
             '774383443804f7b98211973297f39b7a74db407499f46209b292b04a2ff0eb93'
             '334249e83f64c0f6c0035e72483a066bcfc2ae74ffd4ab2fa1e239064771a913')
