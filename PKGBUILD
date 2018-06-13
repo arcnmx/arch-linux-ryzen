@@ -4,7 +4,7 @@
 
 pkgbase=linux-ryzen
 _srcname=linux-4.17
-pkgver=4.17
+pkgver=4.17.1
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
@@ -13,13 +13,14 @@ makedepends=('xmlto' 'kmod' 'inetutils' 'bc' 'libelf')
 options=('!strip')
 source=(
   https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.{xz,sign}
-  #https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.{xz,sign}
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.{xz,sign}
   config         # the main kernel config file
   60-linux.hook  # pacman hook for depmod
   90-linux.hook  # pacman hook for initramfs regeneration
   linux.preset   # standard config files for mkinitcpio ramdisk
   0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
   0002-Revert-drm-i915-edp-Allow-alternate-fixed-mode-for-e.patch
+  0003-ACPI-watchdog-Prefer-iTCO_wdt-always-when-WDAT-table.patch
   'ubuntu-unprivileged-overlayfs.patch'
   # vfio patches
   'i915-vga-arbiter.patch'
@@ -43,7 +44,7 @@ prepare() {
   cd ${_srcname}
 
   # add upstream patch
-  #patch -p1 -i ../patch-${pkgver}
+  patch -p1 -i ../patch-${pkgver}
 
   # amd patches
   patch -Np1 -i ../efifb-nobar.patch
@@ -67,6 +68,9 @@ prepare() {
 
   # https://bugs.archlinux.org/task/56711
   patch -Np1 -i ../0002-Revert-drm-i915-edp-Allow-alternate-fixed-mode-for-e.patch
+
+  # https://bugs.archlinux.org/task/56780
+  patch -Np1 -i ../0003-ACPI-watchdog-Prefer-iTCO_wdt-always-when-WDAT-table.patch
 
   cat ../config - >.config <<END
 CONFIG_LOCALVERSION="${_kernelname}"
@@ -253,12 +257,15 @@ done
 # makepkg -g >> PKGBUILD
 sha256sums=('9faa1dd896eaea961dc6e886697c0b3301277102e5bc976b2758f9a62d3ccd13'
             'SKIP'
+            '31f2f5309d99db632160538d43cf737166ae8b24c1b8091522ca1f9a804c25a1'
+            'SKIP'
             '0f8d23e747b91a875670d2917c688dcd1ec6343da452dc8ae911e6e805040813'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
-            '0b77e6bef12735bc91e3f0e8232512e973688466f2e8a2c3a93502cb2d4b4eed'
-            '92615acad59cbef9fd43b2710f5a77ffea45a86543ccff1b12eb676a9c8058cc'
+            'e3c08f9b91611186e5ec579187ecea2a0143e5c2dc7ffc30ac6ea6e2b6d130fd'
+            '5403dead9161344b2c01027526146a250147680f4a2d32a54d40c55fc1becc8a'
+            'd55e7de60b12bca26ded4c1bb8eb5860a9092374914a201a0f6a0ed2849d099f'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
             '7cb4a5da6bf551dbb2db2e0b4e4d0774ee98cc30d9e617e030b27e6cba3e6293'
             'd09f6d19115d2fc54d07535c62bddb667320f9d07e5b6c09eb76b26730fda5df'
