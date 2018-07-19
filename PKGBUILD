@@ -4,7 +4,7 @@
 
 pkgbase=linux-ryzen
 _srcname=linux-4.17
-pkgver=4.17.6
+pkgver=4.17.8
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
@@ -261,7 +261,7 @@ done
 # makepkg -g >> PKGBUILD
 sha256sums=('9faa1dd896eaea961dc6e886697c0b3301277102e5bc976b2758f9a62d3ccd13'
             'SKIP'
-            '7699b2246e4ed1e284f2947d5e0b66653c27574995caf6a02a3280bd055cfedf'
+            '146f68fa5ded4c33f3bafba23224ed8fae2a27f701257c899c6a4a7fa61eb6d0'
             'SKIP'
             '823bde971eea5dcdc4ecf466c01c23184ab6a13c80dc449b6e5f8815007a885d'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
