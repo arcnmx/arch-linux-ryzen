@@ -1,27 +1,23 @@
 # $Id$
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
 # Maintainer: Tobias Powalowski <tpowa@archlinux.org>
 # Maintainer: Thomas Baechler <thomas@archlinux.org>
 
 pkgbase=linux-ryzen
-_srcname=linux-4.17
-pkgver=4.17.10
+pkgver=4.17.11
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=('GPL2')
-makedepends=('xmlto' 'kmod' 'inetutils' 'bc' 'libelf')
+makedepends=('xmlto' 'kmod' 'inetutils' 'bc' 'libelf' 'git')
 options=('!strip')
+_srcname=archlinux-linux
 source=(
-  https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.{xz,sign}
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.{xz,sign}
+  "$_srcname::git+https://github.com/archlinux/linux?signed#tag=v$pkgver-arch${pkgrel%%.*}"
   config         # the main kernel config file
   60-linux.hook  # pacman hook for depmod
   90-linux.hook  # pacman hook for initramfs regeneration
   linux.preset   # standard config files for mkinitcpio ramdisk
-  0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
-  0002-Revert-drm-i915-edp-Allow-alternate-fixed-mode-for-e.patch
-  0003-ACPI-watchdog-Prefer-iTCO_wdt-always-when-WDAT-table.patch
-  0004-mac80211-disable-BHs-preemption-in-ieee80211_tx_cont.patch
   'ubuntu-unprivileged-overlayfs.patch'
   # vfio patches
   'i915-vga-arbiter.patch'
@@ -36,16 +32,25 @@ source=(
 validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
+  '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
 )
+sha256sums=('SKIP'
+            '417ba0aeb6f35bed88c576b4d1c29120af79c7ac0e2b2494a44f0fa86b570f13'
+            'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
+            '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
+            'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
+            '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
+            '7cb4a5da6bf551dbb2db2e0b4e4d0774ee98cc30d9e617e030b27e6cba3e6293'
+            'd09f6d19115d2fc54d07535c62bddb667320f9d07e5b6c09eb76b26730fda5df'
+            'ff34439a00529e2a425f30854f323141d57e38c4f75b2557c76a71d3c95cfd31'
+            '774383443804f7b98211973297f39b7a74db407499f46209b292b04a2ff0eb93'
+            '334249e83f64c0f6c0035e72483a066bcfc2ae74ffd4ab2fa1e239064771a913')
 
 _kernelname=${pkgbase#linux}
-: ${_kernelname:=-ARCH}
+: ${_kernelname:=-arch}
 
 prepare() {
   cd ${_srcname}
-
-  # add upstream patch
-  patch -p1 -i ../patch-${pkgver}
 
   # amd patches
   patch -Np1 -i ../efifb-nobar.patch
@@ -58,55 +63,13 @@ prepare() {
   patch -Np1 -i ../i915-vga-arbiter.patch
   patch -Np1 -i ../acso.patch
 
-  # security patches
-
-  # add latest fixes from stable queue, if needed
-  # http://git.kernel.org/?p=linux/kernel/git/stable/stable-queue.git
-
-  # disable USER_NS for non-root users by default
-  patch -Np1 -i ../0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
-  patch -Np1 -i ../ubuntu-unprivileged-overlayfs.patch
-
-  # https://bugs.archlinux.org/task/56711
-  patch -Np1 -i ../0002-Revert-drm-i915-edp-Allow-alternate-fixed-mode-for-e.patch
-
-  # https://bugs.archlinux.org/task/56780
-  patch -Np1 -i ../0003-ACPI-watchdog-Prefer-iTCO_wdt-always-when-WDAT-table.patch
-
-  # Fix iwd provoking a BUG
-  patch -Np1 -i ../0004-mac80211-disable-BHs-preemption-in-ieee80211_tx_cont.patch
-
-  cat ../config - >.config <<END
-CONFIG_LOCALVERSION="${_kernelname}"
-CONFIG_LOCALVERSION_AUTO=n
-END
-
-  # set extraversion to pkgrel and empty localversion
-  sed -e "/^EXTRAVERSION =/s/=.*/= -${pkgrel}/" \
-      -e "/^EXTRAVERSION =/aLOCALVERSION =" \
-      -i Makefile
-
-  # don't run depmod on 'make install'. We'll do this ourselves in packaging
-  sed -i '2iexit 0' scripts/depmod.sh
-
-  # get kernel version
-  make prepare
-
-  # load configuration
-  # Configure the kernel. Replace the line below with one of your choice.
-  #make menuconfig # CLI menu for configuration
-  #make nconfig # new CLI menu for configuration
-  #make xconfig # X-based configuration
-  #make oldconfig # using old config from previous kernel version
-  # ... or manually edit .config
-
-  # rewrite configuration
-  yes "" | make config >/dev/null
+  scripts/setlocalversion --save-scmversion
+  cp ../config .config
+  make olddefconfig
 }
 
 build() {
   cd ${_srcname}
-
   make bzImage modules
 }
 
@@ -126,7 +89,7 @@ _package() {
   _basekernel=${_basekernel%.*}
 
   mkdir -p "${pkgdir}"/{boot,usr/lib/modules}
-  make INSTALL_MOD_PATH="${pkgdir}/usr" modules_install
+  make INSTALL_MOD_PATH="${pkgdir}/usr" DEPMOD=/doesnt/exist modules_install
   cp arch/x86/boot/bzImage "${pkgdir}/boot/vmlinuz-${pkgbase}"
 
   # make room for external modules
@@ -257,23 +220,3 @@ for _p in ${pkgname[@]}; do
 done
 
 # vim:set ts=8 sts=2 sw=2 et:
-
-# makepkg -g >> PKGBUILD
-sha256sums=('9faa1dd896eaea961dc6e886697c0b3301277102e5bc976b2758f9a62d3ccd13'
-            'SKIP'
-            '41ad005296c7a1b5245a87881f666b3f4d7aa05a6b9409454b2e473d473c4cee'
-            'SKIP'
-            '823bde971eea5dcdc4ecf466c01c23184ab6a13c80dc449b6e5f8815007a885d'
-            'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
-            '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
-            'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
-            '92f848d0e21fbb2400e50d1c1021514893423641e5450896d7b1d88aa880b2b9'
-            'fc3c50ae6bd905608e0533a883ab569fcf54038fb9d6569b391107d9fd00abbc'
-            'bc50c605bd0e1fa7437c21ddef728b83b6de3322b988e14713032993dfa1fc69'
-            '66284102261c4ed53db050e9045c8672ba0e5171884b46e58f6cd417774d8578'
-            '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
-            '7cb4a5da6bf551dbb2db2e0b4e4d0774ee98cc30d9e617e030b27e6cba3e6293'
-            'd09f6d19115d2fc54d07535c62bddb667320f9d07e5b6c09eb76b26730fda5df'
-            'ff34439a00529e2a425f30854f323141d57e38c4f75b2557c76a71d3c95cfd31'
-            '774383443804f7b98211973297f39b7a74db407499f46209b292b04a2ff0eb93'
-            '334249e83f64c0f6c0035e72483a066bcfc2ae74ffd4ab2fa1e239064771a913')
