@@ -25,7 +25,7 @@ source=(
   https://gitlab.com/Queuecumber/linux-acs-override/raw/master/workspaces/4.17/acso.patch
   # amd patches
   'efifb-nobar.patch'
-  'https://github.com/graysky2/kernel_gcc_patch/raw/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch'
+  'enable_additional_cpu_optimizations_for_gcc_v4.9.patch::https://github.com/graysky2/kernel_gcc_patch/raw/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch'
   # nvidia workaround
   'nvidia-i2c-workaround.patch'
 )
@@ -52,17 +52,6 @@ _kernelname=${pkgbase#linux}
 
 prepare() {
   cd $_srcname
-
-  # amd patches
-  patch -Np1 -i ../efifb-nobar.patch
-  patch -Np1 -i ../enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch
-
-  # nvidia workaround
-  patch -Np1 -i ../nvidia-i2c-workaround.patch
-
-  # vfio patches
-  patch -Np1 -i ../i915-vga-arbiter.patch
-  patch -Np1 -i ../acso.patch
 
   msg2 "Setting version..."
   scripts/setlocalversion --save-scmversion
