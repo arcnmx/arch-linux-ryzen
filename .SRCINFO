@@ -1,7 +1,7 @@
 pkgbase = linux-ryzen
-	pkgver = 4.17.12.arch1
+	pkgver = 4.17.13.arch1
 	pkgrel = 1
-	url = https://github.com/archlinux/linux/commits/v4.17.12-arch1
+	url = https://github.com/archlinux/linux/commits/v4.17.13-arch1
 	arch = x86_64
 	license = GPL2
 	makedepends = xmlto
@@ -11,7 +11,7 @@ pkgbase = linux-ryzen
 	makedepends = libelf
 	makedepends = git
 	options = !strip
-	source = archlinux-linux::git+https://github.com/archlinux/linux?signed#tag=v4.17.12-arch1
+	source = archlinux-linux::git+https://github.com/archlinux/linux?signed#tag=v4.17.13-arch1
 	source = config
 	source = 60-linux.hook
 	source = 90-linux.hook
@@ -20,7 +20,7 @@ pkgbase = linux-ryzen
 	source = i915-vga-arbiter.patch
 	source = https://gitlab.com/Queuecumber/linux-acs-override/raw/master/workspaces/4.17/acso.patch
 	source = efifb-nobar.patch
-	source = https://github.com/graysky2/kernel_gcc_patch/raw/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch
+	source = enable_additional_cpu_optimizations_for_gcc_v4.9.patch::https://github.com/graysky2/kernel_gcc_patch/raw/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch
 	source = nvidia-i2c-workaround.patch
 	validpgpkeys = ABAF11C65A2970B130ABE3C479BE3E4300411886
 	validpgpkeys = 647F28654894E3BD457199BE38DBBDC86092693E
