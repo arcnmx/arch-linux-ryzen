@@ -4,17 +4,17 @@
 # Maintainer: Thomas Baechler <thomas@archlinux.org>
 
 pkgbase=linux-ryzen
-_srcver=4.17.13-arch1
+_srcver=4.18-arch1
 pkgver=${_srcver//-/.}
 pkgrel=1
 arch=(x86_64)
-url="https://github.com/archlinux/linux/commits/v$_srcver"
+url="https://git.archlinux.org/linux.git/log/?h=v$_srcver"
 license=(GPL2)
 makedepends=(xmlto kmod inetutils bc libelf git)
 options=('!strip')
 _srcname=archlinux-linux
 source=(
-  "$_srcname::git+https://github.com/archlinux/linux?signed#tag=v$_srcver"
+  "$_srcname::git+https://git.archlinux.org/linux.git?signed#tag=v$_srcver"
   config         # the main kernel config file
   60-linux.hook  # pacman hook for depmod
   90-linux.hook  # pacman hook for initramfs regeneration
@@ -36,8 +36,8 @@ validpgpkeys=(
   '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
 )
 sha256sums=('SKIP'
-            '417ba0aeb6f35bed88c576b4d1c29120af79c7ac0e2b2494a44f0fa86b570f13'
-            '36e326d8a88b4087a3a0ee0d47643fc03baeda487659980d0e9d08791e4c729c'
+            'f35fdfeb866716ca5e78558be3ac2ae5fc5e83ee1c8f2bac46df16730664329e'
+            'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
