@@ -4,7 +4,7 @@
 # Maintainer: Thomas Baechler <thomas@archlinux.org>
 
 pkgbase=linux-ryzen
-_srcver=4.18-arch1
+_srcver=4.18.3-arch1
 pkgver=${_srcver//-/.}
 pkgrel=1
 arch=(x86_64)
@@ -36,7 +36,7 @@ validpgpkeys=(
   '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
 )
 sha256sums=('SKIP'
-            'f35fdfeb866716ca5e78558be3ac2ae5fc5e83ee1c8f2bac46df16730664329e'
+            'eb757d32186eff6deda8843ee124345e527c07cbf0ec31cc3bb51bc09683659a'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
@@ -98,7 +98,7 @@ _package() {
   msg2 "Installing modules..."
   local modulesdir="$pkgdir/usr/lib/modules/$kernver"
   mkdir -p "$modulesdir"
-  make INSTALL_MOD_PATH="$pkgdir/usr" DEPMOD=/doesnt/exist modules_install
+  make INSTALL_MOD_PATH="$pkgdir/usr" modules_install
 
   # a place for external modules,
   # with version file for building modules and running depmod from hook
@@ -110,11 +110,7 @@ _package() {
   # remove build and source links
   rm "$modulesdir"/{source,build}
 
-  msg2 "Running depmod..."
-  depmod -b "$pkgdir/usr" -E Module.symvers -e "$kernver"
-
   msg2 "Installing hooks..."
-
   # sed expression for following substitutions
   local subst="
     s|%PKGBASE%|$pkgbase|g
