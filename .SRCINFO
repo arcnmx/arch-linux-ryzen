@@ -12,7 +12,7 @@ pkgbase = linux-ryzen
 	makedepends = git
 	makedepends = graphviz
 	options = !strip
-	source = archlinux-linux::git+https://git.archlinux.org/linux.git?tag=v4.18.5-arch1
+	source = archlinux-linux::git+https://git.archlinux.org/linux.git#tag=v4.18.5-arch1
 	source = config
 	source = 60-linux.hook
 	source = 90-linux.hook
@@ -32,7 +32,7 @@ pkgbase = linux-ryzen
 	sha256sums = 75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919
 	sha256sums = e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7
 	sha256sums = 01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa
-	sha256sums = adc65622175d644c9f04c2cf0042d2e830aeae5e2e47f7c4ae46baa8faf635b7
+	sha256sums = fc1734c1d24aca66015d93f8636afd52afa0f939516d83efb3457da6b5044944
 	sha256sums = d09f6d19115d2fc54d07535c62bddb667320f9d07e5b6c09eb76b26730fda5df
 	sha256sums = ff34439a00529e2a425f30854f323141d57e38c4f75b2557c76a71d3c95cfd31
 	sha256sums = 774383443804f7b98211973297f39b7a74db407499f46209b292b04a2ff0eb93
