@@ -22,6 +22,7 @@ pkgbase = linux-ryzen
 	source = https://gitlab.com/Queuecumber/linux-acs-override/raw/master/workspaces/4.17/acso.patch
 	source = efifb-nobar.patch
 	source = enable_additional_cpu_optimizations_for_gcc_v4.9.patch::https://github.com/graysky2/kernel_gcc_patch/raw/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch
+	source = psp-sev-bug.patch
 	source = nvidia-i2c-workaround.patch
 	validpgpkeys = ABAF11C65A2970B130ABE3C479BE3E4300411886
 	validpgpkeys = 647F28654894E3BD457199BE38DBBDC86092693E
@@ -36,6 +37,7 @@ pkgbase = linux-ryzen
 	sha256sums = d09f6d19115d2fc54d07535c62bddb667320f9d07e5b6c09eb76b26730fda5df
 	sha256sums = ff34439a00529e2a425f30854f323141d57e38c4f75b2557c76a71d3c95cfd31
 	sha256sums = 774383443804f7b98211973297f39b7a74db407499f46209b292b04a2ff0eb93
+	sha256sums = 545f1bea1c0f37a7a655252dde48a28f86dcab24a912e43f1cc3783985d4c725
 	sha256sums = 334249e83f64c0f6c0035e72483a066bcfc2ae74ffd4ab2fa1e239064771a913
 
 pkgname = linux-ryzen
