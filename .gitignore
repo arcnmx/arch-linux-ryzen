@@ -7,3 +7,4 @@
 /enable_additional_cpu_optimizations_for_gcc_*.patch
 /k10temp-ryzen2.patch
 /acso.patch
+/i915-vga-arbiter.patch
