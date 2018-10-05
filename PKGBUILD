@@ -26,7 +26,6 @@ source=(
   'efifb-nobar.patch'
   'enable_additional_cpu_optimizations_for_gcc_v4.9.patch::https://github.com/graysky2/kernel_gcc_patch/raw/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch'
   # https://bugzilla.redhat.com/show_bug.cgi?id=1608242
-  'psp-sev-bug.patch'
   # nvidia workaround
   'nvidia-i2c-workaround.patch'
 )
@@ -46,7 +45,6 @@ sha256sums=('SKIP'
             'd09f6d19115d2fc54d07535c62bddb667320f9d07e5b6c09eb76b26730fda5df'
             'ff34439a00529e2a425f30854f323141d57e38c4f75b2557c76a71d3c95cfd31'
             '774383443804f7b98211973297f39b7a74db407499f46209b292b04a2ff0eb93'
-            '545f1bea1c0f37a7a655252dde48a28f86dcab24a912e43f1cc3783985d4c725'
             '334249e83f64c0f6c0035e72483a066bcfc2ae74ffd4ab2fa1e239064771a913')
 
 _kernelname=${pkgbase#linux}
