@@ -13,7 +13,7 @@ makedepends=(xmlto kmod inetutils bc libelf git graphviz)
 options=('!strip')
 _srcname=archlinux-linux
 source=(
-  "$_srcname::git+https://git.archlinux.org/linux.git#tag=v$_srcver"
+  "$_srcname::git+https://git.archlinux.org/linux.git?tag=v$_srcver"
   config         # the main kernel config file
   60-linux.hook  # pacman hook for depmod
   90-linux.hook  # pacman hook for initramfs regeneration
