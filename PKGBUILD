@@ -3,7 +3,7 @@
 # Maintainer: Thomas Baechler <thomas@archlinux.org>
 
 pkgbase=linux-ryzen
-_srcver=4.20.12-arch1
+_srcver=4.20.13-arch1
 pkgver=${_srcver//-/.}
 pkgrel=1
 arch=(x86_64)
