@@ -1,15 +1,15 @@
 # Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
 # Maintainer: Tobias Powalowski <tpowa@archlinux.org>
-# Maintainer: Thomas Baechler <thomas@archlinux.org>
+# Contributor: Thomas Baechler <thomas@archlinux.org>
 
 pkgbase=linux-ryzen
-_srcver=5.0.6-arch1
+_srcver=5.0.8-arch1
 pkgver=${_srcver//-/.}
 pkgrel=1
 arch=(x86_64)
 url="https://git.archlinux.org/linux.git/log/?h=v$_srcver"
 license=(GPL2)
-makedepends=(xmlto kmod inetutils bc libelf git graphviz)
+makedepends=(xmlto kmod inetutils bc libelf git)
 options=('!strip')
 _srcname=archlinux-linux
 source=(
@@ -36,7 +36,7 @@ validpgpkeys=(
   '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
 )
 sha256sums=('SKIP'
-            'e52877ee01e543e9c0bd72b0e1f5d1637b589c1bde4922012dfcbb6a77f82b7b'
+            '4a13577995f87e15ce78e271dd3ef0a94d97b2dd3c9652dccadb3b7421afadb7'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             'c043f3033bb781e2688794a59f6d1f7ed49ef9b13eb77ff9a425df33a244a636'
             'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
@@ -227,18 +227,6 @@ _package-docs() {
   msg2 "Installing documentation..."
   mkdir -p "$builddir"
   cp -t "$builddir" -a Documentation
-
-  msg2 "Removing doctrees..."
-  rm -r "$builddir/Documentation/output/.doctrees"
-
-  msg2 "Moving HTML docs..."
-  local src dst
-  while read -rd '' src; do
-    dst="$builddir/Documentation/${src#$builddir/Documentation/output/}"
-    mkdir -p "${dst%/*}"
-    mv "$src" "$dst"
-    rmdir -p --ignore-fail-on-non-empty "${src%/*}"
-  done < <(find "$builddir/Documentation/output" -type f -print0)
 
   msg2 "Adding symlink..."
   mkdir -p "$pkgdir/usr/share/doc"
