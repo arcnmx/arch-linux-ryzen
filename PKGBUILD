@@ -3,7 +3,7 @@
 # Contributor: Thomas Baechler <thomas@archlinux.org>
 
 pkgbase=linux-ryzen
-_srcver=5.2.11-arch1
+_srcver=5.3.1-arch1
 pkgver=${_srcver//-/.}
 pkgrel=1
 arch=(x86_64)
@@ -22,7 +22,8 @@ source=(
   linux.preset   # standard config files for mkinitcpio ramdisk
   'ubuntu-unprivileged-overlayfs.patch'
   # vfio patches
-  'i915-vga-arbiter.patch::https://aur.archlinux.org/cgit/aur.git/plain/i915-vga-arbiter.patch?h=linux-vfio'
+  #'i915-vga-arbiter.patch::https://aur.archlinux.org/cgit/aur.git/plain/i915-vga-arbiter.patch?h=linux-vfio'
+  'i915-vga-arbiter.patch'
   https://gitlab.com/Queuecumber/linux-acs-override/raw/master/workspaces/4.17/acso.patch
   # amd patches
   'efifb-nobar.patch'
@@ -38,12 +39,12 @@ validpgpkeys=(
   '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
 )
 sha256sums=('SKIP'
-            '8e650af902b7d20c716a2a3553da99ff91ddff9ec1df08eff6aebcdcf0986883'
+            'e6f6fbf62555dadc920d0e445f05ba969d3811dbb7f7aea5e4bbdcac1992d024'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             'c043f3033bb781e2688794a59f6d1f7ed49ef9b13eb77ff9a425df33a244a636'
             'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
-            'adc65622175d644c9f04c2cf0042d2e830aeae5e2e47f7c4ae46baa8faf635b7'
+            '6a8562f579cada74da7b96ac0d5ad4454808e7c75545636a0ab93c6b913373f6'
             'd09f6d19115d2fc54d07535c62bddb667320f9d07e5b6c09eb76b26730fda5df'
             'ff34439a00529e2a425f30854f323141d57e38c4f75b2557c76a71d3c95cfd31'
             '774383443804f7b98211973297f39b7a74db407499f46209b292b04a2ff0eb93'
