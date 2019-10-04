@@ -1,7 +1,7 @@
 pkgbase = linux-ryzen
-	pkgver = 5.3.1.arch1
+	pkgver = 5.3.2.arch1
 	pkgrel = 1
-	url = https://git.archlinux.org/linux.git/log/?h=v5.3.1-arch1
+	url = https://git.archlinux.org/linux.git/log/?h=v5.3.2-arch1
 	arch = x86_64
 	license = GPL2
 	makedepends = xmlto
@@ -11,7 +11,7 @@ pkgbase = linux-ryzen
 	makedepends = libelf
 	makedepends = git
 	options = !strip
-	source = archlinux-linux::git+https://git.archlinux.org/linux.git#tag=v5.3.1-arch1
+	source = archlinux-linux::git+https://git.archlinux.org/linux.git#tag=v5.3.2-arch1
 	source = config
 	source = 60-linux.hook
 	source = 90-linux.hook
@@ -26,7 +26,7 @@ pkgbase = linux-ryzen
 	validpgpkeys = 647F28654894E3BD457199BE38DBBDC86092693E
 	validpgpkeys = 8218F88849AAC522E94CF470A5E9288C4FA415FA
 	sha256sums = SKIP
-	sha256sums = e6f6fbf62555dadc920d0e445f05ba969d3811dbb7f7aea5e4bbdcac1992d024
+	sha256sums = 5df1d11b310aa1158e6aa61cb715280b829207e11d34c8b558c9557264f25b14
 	sha256sums = ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21
 	sha256sums = c043f3033bb781e2688794a59f6d1f7ed49ef9b13eb77ff9a425df33a244a636
 	sha256sums = e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7
@@ -41,10 +41,10 @@ pkgname = linux-ryzen
 	pkgdesc = The Linux-ryzen kernel and modules with AMD Ryzen temperature monitoring fixes
 	install = linux.install
 	depends = coreutils
-	depends = linux-firmware
 	depends = kmod
-	depends = mkinitcpio
+	depends = initramfs
 	optdepends = crda: to set the correct wireless channels of your country
+	optdepends = linux-firmware: firmware images needed for some devices
 	backup = etc/mkinitcpio.d/linux-ryzen.preset
 
 pkgname = linux-ryzen-headers
