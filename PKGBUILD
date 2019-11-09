@@ -1,25 +1,22 @@
 # Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
-# Maintainer: Tobias Powalowski <tpowa@archlinux.org>
-# Contributor: Thomas Baechler <thomas@archlinux.org>
 
 pkgbase=linux-ryzen
-_srcver=5.3.7-arch1
-pkgver=${_srcver//-/.}
+pkgver=5.3.9.1
 pkgrel=1
+pkgdesc='Linux'
+_srctag=v${pkgver%.*}-arch${pkgver##*.}
+url="https://git.archlinux.org/linux.git/log/?h=$_srctag"
 arch=(x86_64)
-url="https://git.archlinux.org/linux.git/log/?h=v$_srcver"
 license=(GPL2)
 makedepends=(
-  xmlto kmod inetutils bc libelf git
+  xmlto kmod inetutils bc libelf
+  git
 )
 options=('!strip')
 _srcname=archlinux-linux
 source=(
-  "$_srcname::git+https://git.archlinux.org/linux.git#tag=v$_srcver"
+  "$_srcname::git+https://git.archlinux.org/linux.git?signed#tag=$_srctag"
   config         # the main kernel config file
-  60-linux.hook  # pacman hook for depmod
-  90-linux.hook  # pacman hook for initramfs regeneration
-  linux.preset   # standard config files for mkinitcpio ramdisk
   'ubuntu-unprivileged-overlayfs.patch'
   # vfio patches
   #'i915-vga-arbiter.patch::https://aur.archlinux.org/cgit/aur.git/plain/i915-vga-arbiter.patch?h=linux-vfio'
@@ -39,10 +36,7 @@ validpgpkeys=(
   '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
 )
 sha256sums=('SKIP'
-            '5df1d11b310aa1158e6aa61cb715280b829207e11d34c8b558c9557264f25b14'
-            '452b8d4d71e1565ca91b1bebb280693549222ef51c47ba8964e411b2d461699c'
-            'c043f3033bb781e2688794a59f6d1f7ed49ef9b13eb77ff9a425df33a244a636'
-            'e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7'
+            '5bb0b3098071ce039bdea5837a73732dc86d6235834ebf8e03866c9923b74fe8'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
             '6a8562f579cada74da7b96ac0d5ad4454808e7c75545636a0ab93c6b913373f6'
             'd09f6d19115d2fc54d07535c62bddb667320f9d07e5b6c09eb76b26730fda5df'
@@ -50,8 +44,9 @@ sha256sums=('SKIP'
             '774383443804f7b98211973297f39b7a74db407499f46209b292b04a2ff0eb93'
             '334249e83f64c0f6c0035e72483a066bcfc2ae74ffd4ab2fa1e239064771a913')
 
-_kernelname=${pkgbase#linux}
-: ${_kernelname:=-ARCH}
+export KBUILD_BUILD_HOST=archlinux
+export KBUILD_BUILD_USER=$pkgbase
+export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
 prepare() {
   cd $_srcname
@@ -59,7 +54,7 @@ prepare() {
   msg2 "Setting version..."
   scripts/setlocalversion --save-scmversion
   echo "-$pkgrel" > localversion.10-pkgrel
-  echo "$_kernelname" > localversion.20-pkgname
+  echo "${pkgbase#linux}" > localversion.20-pkgname
 
   local src
   for src in "${source[@]}"; do
@@ -84,12 +79,10 @@ build() {
 }
 
 _package() {
-  pkgdesc="The ${pkgbase/linux/Linux} kernel and modules with AMD Ryzen temperature monitoring fixes"
+  pkgdesc="The $pkgdesc kernel and modules with AMD Ryzen temperature monitoring fixes"
   depends=(coreutils kmod initramfs)
   optdepends=('crda: to set the correct wireless channels of your country'
               'linux-firmware: firmware images needed for some devices')
-  backup=("etc/mkinitcpio.d/$pkgbase.preset")
-  install=linux.install
 
   cd $_srcname
   local kernver="$(<version)"
@@ -99,7 +92,6 @@ _package() {
   # systemd expects to find the kernel here to allow hibernation
   # https://github.com/systemd/systemd/commit/edda44605f06a41fb86b7ab8128dcf99161d2344
   install -Dm644 "$(make -s image_name)" "$modulesdir/vmlinuz"
-  install -Dm644 "$modulesdir/vmlinuz" "$pkgdir/boot/vmlinuz-$pkgbase"
 
   # Used by mkinitcpio to name the kernel
   echo "$pkgbase" | install -Dm644 /dev/stdin "$modulesdir/pkgbase"
@@ -110,31 +102,12 @@ _package() {
   # remove build and source links
   rm "$modulesdir"/{source,build}
 
-  msg2 "Installing hooks..."
-  # sed expression for following substitutions
-  local subst="
-    s|%PKGBASE%|$pkgbase|g
-    s|%KERNVER%|$kernver|g
-  "
-
-  # hack to allow specifying an initially nonexisting install file
-  sed "$subst" "$startdir/$install" > "$startdir/$install.pkg"
-  true && install=$install.pkg
-
-  # fill in mkinitcpio preset and pacman hooks
-  sed "$subst" ../linux.preset | install -Dm644 /dev/stdin \
-    "$pkgdir/etc/mkinitcpio.d/$pkgbase.preset"
-  sed "$subst" ../60-linux.hook | install -Dm644 /dev/stdin \
-    "$pkgdir/usr/share/libalpm/hooks/60-$pkgbase.hook"
-  sed "$subst" ../90-linux.hook | install -Dm644 /dev/stdin \
-    "$pkgdir/usr/share/libalpm/hooks/90-$pkgbase.hook"
-
   msg2 "Fixing permissions..."
   chmod -Rc u=rwX,go=rX "$pkgdir"
 }
 
 _package-headers() {
-  pkgdesc="Header files and scripts for building modules for ${pkgbase/linux/Linux} kernel"
+  pkgdesc="Headers and scripts for building modules for the $pkgdesc kernel"
 
   cd $_srcname
   local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
@@ -212,7 +185,7 @@ _package-headers() {
 }
 
 _package-docs() {
-  pkgdesc="Kernel hackers manual - HTML documentation that comes with the ${pkgbase/linux/Linux} kernel"
+  pkgdesc="Kernel hacker's manual for the $pkgdesc kernel"
 
   cd $_srcname
   local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
@@ -221,8 +194,8 @@ _package-docs() {
   mkdir -p "$builddir"
   cp -t "$builddir" -a Documentation
 
-  msg2 "Removing doctrees..."
-  rm -r "$builddir/Documentation/output/.doctrees"
+  msg2 "Removing unneeded files..."
+  rm -rv "$builddir"/Documentation/{,output/}.[^.]*
 
   msg2 "Moving HTML docs..."
   local src dst

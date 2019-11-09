@@ -1,7 +1,8 @@
 pkgbase = linux-ryzen
-	pkgver = 5.3.7.arch1
+	pkgdesc = Linux
+	pkgver = 5.3.9.1
 	pkgrel = 1
-	url = https://git.archlinux.org/linux.git/log/?h=v5.3.7-arch1
+	url = https://git.archlinux.org/linux.git/log/?h=v5.3.9-arch1
 	arch = x86_64
 	license = GPL2
 	makedepends = xmlto
@@ -11,11 +12,8 @@ pkgbase = linux-ryzen
 	makedepends = libelf
 	makedepends = git
 	options = !strip
-	source = archlinux-linux::git+https://git.archlinux.org/linux.git#tag=v5.3.7-arch1
+	source = archlinux-linux::git+https://git.archlinux.org/linux.git?signed#tag=v5.3.9-arch1
 	source = config
-	source = 60-linux.hook
-	source = 90-linux.hook
-	source = linux.preset
 	source = ubuntu-unprivileged-overlayfs.patch
 	source = i915-vga-arbiter.patch
 	source = https://gitlab.com/Queuecumber/linux-acs-override/raw/master/workspaces/4.17/acso.patch
@@ -26,10 +24,7 @@ pkgbase = linux-ryzen
 	validpgpkeys = 647F28654894E3BD457199BE38DBBDC86092693E
 	validpgpkeys = 8218F88849AAC522E94CF470A5E9288C4FA415FA
 	sha256sums = SKIP
-	sha256sums = 5df1d11b310aa1158e6aa61cb715280b829207e11d34c8b558c9557264f25b14
-	sha256sums = 452b8d4d71e1565ca91b1bebb280693549222ef51c47ba8964e411b2d461699c
-	sha256sums = c043f3033bb781e2688794a59f6d1f7ed49ef9b13eb77ff9a425df33a244a636
-	sha256sums = e1172898719b095861d7e8353977524741db5e9f4aa191ae7502a98d6cefbfa7
+	sha256sums = 5bb0b3098071ce039bdea5837a73732dc86d6235834ebf8e03866c9923b74fe8
 	sha256sums = 01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa
 	sha256sums = 6a8562f579cada74da7b96ac0d5ad4454808e7c75545636a0ab93c6b913373f6
 	sha256sums = d09f6d19115d2fc54d07535c62bddb667320f9d07e5b6c09eb76b26730fda5df
@@ -38,15 +33,13 @@ pkgbase = linux-ryzen
 	sha256sums = 334249e83f64c0f6c0035e72483a066bcfc2ae74ffd4ab2fa1e239064771a913
 
 pkgname = linux-ryzen
-	pkgdesc = The Linux-ryzen kernel and modules with AMD Ryzen temperature monitoring fixes
-	install = linux.install
+	pkgdesc = The Linux kernel and modules with AMD Ryzen temperature monitoring fixes
 	depends = coreutils
 	depends = kmod
 	depends = initramfs
 	optdepends = crda: to set the correct wireless channels of your country
 	optdepends = linux-firmware: firmware images needed for some devices
-	backup = etc/mkinitcpio.d/linux-ryzen.preset
 
 pkgname = linux-ryzen-headers
-	pkgdesc = Header files and scripts for building modules for Linux-ryzen kernel
+	pkgdesc = Headers and scripts for building modules for the Linux kernel
 
