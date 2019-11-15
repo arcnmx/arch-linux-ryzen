@@ -1,7 +1,7 @@
 # Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
 
 pkgbase=linux-ryzen
-pkgver=5.3.9.1
+pkgver=5.3.11.1
 pkgrel=1
 pkgdesc='Linux'
 _srctag=v${pkgver%.*}-arch${pkgver##*.}
@@ -36,7 +36,7 @@ validpgpkeys=(
   '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
 )
 sha256sums=('SKIP'
-            '5bb0b3098071ce039bdea5837a73732dc86d6235834ebf8e03866c9923b74fe8'
+            '6660558868c491b60dc95847ff59601365414521692b6eeb10048b0b9fcdcdc7'
             '01a6d59a55df1040127ced0412f44313b65356e3c680980210593ee43f2495aa'
             '6a8562f579cada74da7b96ac0d5ad4454808e7c75545636a0ab93c6b913373f6'
             'd09f6d19115d2fc54d07535c62bddb667320f9d07e5b6c09eb76b26730fda5df'
